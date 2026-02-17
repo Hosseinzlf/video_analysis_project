@@ -97,3 +97,17 @@
 2026-02-17 15:29:40,009 | video_processor | INFO | extract_frames_uniform:153 | Extracting 5 frames uniformly
 2026-02-17 15:29:40,661 | video_processor | INFO | extract_frames_uniform:190 | Extracted 5 frames
 2026-02-17 15:29:40,662 | video_processor | INFO | cleanup_frames:240 | Removed temp folder: temp/23675228-82a7-4d4f-ab9f-827510c43ef9
+2026-02-17 16:26:48,894 | video_processor | INFO | extract_frames_smart:122 | Starting smart frame extraction
+2026-02-17 16:26:49,899 | video_processor | INFO | extract_frames_smart:125 | Found 1 scenes
+2026-02-17 16:26:49,899 | video_processor | INFO | extract_frames_smart:134 | Too few scenes (1), adding uniform frames
+2026-02-17 16:26:49,899 | video_processor | INFO | extract_frames_from_scenes:99 | Extracting frames from 1 scenes
+2026-02-17 16:26:50,070 | video_processor | INFO | extract_frames_from_scenes:114 | Extracted 1 scene frames
+2026-02-17 16:26:50,070 | video_processor | INFO | extract_frames_uniform:72 | Extracting 4 frames uniformly
+2026-02-17 16:26:50,634 | video_processor | INFO | extract_frames_uniform:91 | Extracted 4 frames uniformly
+2026-02-17 16:26:50,635 | video_processor | INFO | cleanup_frames:169 | Removed temp folder: temp/70e827b7-e44f-426d-a3a9-b2b5f435ab4f
+2026-02-17 16:39:20,170 | video_processor | INFO | extract_frames_smart:122 | Starting smart frame extraction
+2026-02-17 16:39:25,502 | video_processor | INFO | extract_frames_smart:125 | Found 97 scenes
+2026-02-17 16:39:25,502 | video_processor | INFO | extract_frames_smart:130 | Too many scenes (97), sampling down to 15
+2026-02-17 16:39:25,502 | video_processor | INFO | extract_frames_from_scenes:99 | Extracting frames from 15 scenes
+2026-02-17 16:39:25,693 | video_processor | INFO | extract_frames_from_scenes:114 | Extracted 15 scene frames
+2026-02-17 16:39:25,694 | video_processor | INFO | cleanup_frames:169 | Removed temp folder: temp/16aa8395-80c5-408a-ac42-9fb0690841b9
