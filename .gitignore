@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Environment variables
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# Temp files
+temp/
+*.tmp
+
+# Output files
+outputs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads - exclude all video files (keep them local only)
+uploads/*.mp4
+uploads/*.avi
+uploads/*.mov
+uploads/*.mkv
+uploads/*.webm
