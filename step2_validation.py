@@ -1,180 +1,171 @@
-"""
-STEP 2 VALIDATION SCRIPT
-Location: video-analysis-api/step2_validation.py
-
-Usage (run from video-analysis-api directory, using your conda env):
-
-  In terminal (activate your env first, then run):
-    conda activate video-analysis-api
-    python step2_validation.py uploads/test_video.mp4
-
-  In Cursor: select the "video-analysis-api" Python interpreter (Python 3.11)
-  so that Run / Run Python File uses that env.
-"""
-
-import sys
+import cv2
 import os
+import uuid
+import numpy as np
 from pathlib import Path
+from typing import List, Dict, Tuple
+import ffmpeg
 
-# Ensure we can import app.* when run from video-analysis-api
-_script_dir = Path(__file__).resolve().parent
-sys.path.insert(0, str(_script_dir))
-os.chdir(_script_dir)
+from app.core.config import settings
+from app.utils.logger import setup_logger
 
-# Unbuffered output so you see progress when run from CLI
-def _out(*args, **kwargs):
-    kwargs.setdefault("flush", True)
-    print(*args, **kwargs)
-
-print("Step 2 validation starting...", flush=True)
-
-PASS = "✅"
-FAIL = "❌"
-results = []
-
-def check(label, fn):
-    try:
-        fn()
-        _out(f"  {PASS}  {label}")
-        results.append((label, True))
-    except Exception as e:
-        _out(f"  {FAIL}  {label}")
-        _out(f"       └─ {e}")
-        results.append((label, False))
+logger = setup_logger("video_processor")
 
 
-_out("\n" + "=" * 55)
-_out("  STEP 2 VALIDATION: Video Processor")
-_out("=" * 55)
+class VideoProcessor:
+    """
+    Handles all video file operations:
+    - Validate the video file
+    - Extract metadata (duration, fps, size)
+    - Extract frames as jpg images (uniform or smart)
+    - Clean up temporary files
+    """
 
-# ── Get video path from args ───────────────────────────────────
-video_path = sys.argv[1] if len(sys.argv) > 1 else None
+    def __init__(self, temp_dir: str = None):
+        self.temp_dir = Path(temp_dir or settings.temp_dir)
+        self.temp_dir.mkdir(exist_ok=True)
 
-if not video_path:
-    _out("\n  No video path provided.")
-    _out("  Usage: python step2_validation.py your_video.mp4\n")
-    sys.exit(1)
+        from app.services.scene_detector import SceneDetector
+        self.scene_detector = SceneDetector()
 
-# Resolve path: try as-is, then relative to script directory
-video_path = Path(video_path)
-if not video_path.is_absolute():
-    video_path = (_script_dir / video_path).resolve()
-else:
-    video_path = video_path.resolve()
+    def get_video_info(self, video_path: str) -> Dict:
+        try:
+            logger.info(f"Reading metadata for: {video_path}")
+            probe        = ffmpeg.probe(video_path)
+            video_stream = next(s for s in probe["streams"] if s["codec_type"] == "video")
+            duration     = float(probe["format"]["duration"])
+            width        = int(video_stream["width"])
+            height       = int(video_stream["height"])
+            fps_str      = video_stream["r_frame_rate"]
+            num, den     = fps_str.split("/")
+            fps          = float(num) / float(den)
+            total_frames = int(video_stream.get("nb_frames", 0))
+            if total_frames == 0:
+                total_frames = int(duration * fps)
+            info = {"duration": duration, "width": width, "height": height,
+                    "fps": fps, "total_frames": total_frames,
+                    "format": probe["format"]["format_name"]}
+            logger.info(f"Metadata: {info}")
+            return info
+        except Exception as e:
+            logger.error(f"Failed to read metadata: {e}")
+            raise Exception(f"Could not read video info: {e}")
 
-if not video_path.exists():
-    _out(f"\n  {FAIL} Video file not found: {video_path}")
-    sys.exit(1)
+    def validate_video(self, video_path: str) -> bool:
+        try:
+            logger.info(f"Validating video: {video_path}")
+            if not Path(video_path).exists():
+                raise FileNotFoundError(f"File not found: {video_path}")
+            info = self.get_video_info(video_path)
+            if info["duration"] > settings.max_video_duration:
+                raise ValueError(f"Video too long: {info['duration']:.0f}s")
+            if info["total_frames"] < 1:
+                raise ValueError("Video has no frames")
+            logger.info("Video validation passed")
+            return True
+        except Exception as e:
+            logger.error(f"Validation failed: {e}")
+            raise
 
-video_path = str(video_path)
-_out(f"\n  Testing with: {video_path}\n")
+    def extract_frames_uniform(self, video_path: str, num_frames: int) -> List[str]:
+        try:
+            logger.info(f"Extracting {num_frames} frames uniformly")
+            frame_dir    = self.temp_dir / str(uuid.uuid4())
+            frame_dir.mkdir(exist_ok=True)
+            cap          = cv2.VideoCapture(video_path)
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            if total_frames <= num_frames:
+                frame_indices = list(range(total_frames))
+            else:
+                frame_indices = [int(i) for i in np.linspace(0, total_frames - 1, num_frames)]
+            extracted = []
+            for idx, frame_num in enumerate(frame_indices):
+                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num)
+                ret, frame = cap.read()
+                if ret:
+                    frame      = self._resize_frame(frame)
+                    frame_path = frame_dir / f"frame_{idx:03d}.jpg"
+                    cv2.imwrite(str(frame_path), frame, [cv2.IMWRITE_JPEG_QUALITY, settings.frame_quality])
+                    extracted.append(str(frame_path))
+            cap.release()
+            logger.info(f"Extracted {len(extracted)} frames uniformly")
+            return extracted
+        except Exception as e:
+            logger.error(f"Uniform extraction failed: {e}")
+            raise
 
+    def extract_frames_from_scenes(self, video_path: str, scenes: List[Tuple[int, int]]) -> List[str]:
+        try:
+            logger.info(f"Extracting frames from {len(scenes)} scenes")
+            frame_dir = self.temp_dir / str(uuid.uuid4())
+            frame_dir.mkdir(exist_ok=True)
+            keyframes = self.scene_detector.get_scene_keyframes(scenes)
+            cap       = cv2.VideoCapture(video_path)
+            extracted = []
+            for idx, frame_num in enumerate(keyframes):
+                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num)
+                ret, frame = cap.read()
+                if ret:
+                    frame      = self._resize_frame(frame)
+                    frame_path = frame_dir / f"scene_{idx:03d}.jpg"
+                    cv2.imwrite(str(frame_path), frame, [cv2.IMWRITE_JPEG_QUALITY, settings.frame_quality])
+                    extracted.append(str(frame_path))
+            cap.release()
+            logger.info(f"Extracted {len(extracted)} scene frames")
+            return extracted
+        except Exception as e:
+            logger.error(f"Scene frame extraction failed: {e}")
+            raise
 
-# ── 1. Import check ───────────────────────────────────────────
-_out("[1] Checking imports...")
+    def extract_frames_smart(self, video_path: str) -> List[str]:
+        try:
+            logger.info("Starting smart frame extraction")
+            try:
+                scenes = self.scene_detector.detect_scenes(video_path)
+                logger.info(f"Found {len(scenes)} scenes")
+                if len(scenes) == 0:
+                    logger.warning("No scenes found, using uniform sampling")
+                    return self.extract_frames_uniform(video_path, settings.default_frames)
+                if len(scenes) > settings.max_frames:
+                    logger.info(f"Too many scenes ({len(scenes)}), sampling down to {settings.max_frames}")
+                    indices = np.linspace(0, len(scenes) - 1, settings.max_frames, dtype=int)
+                    scenes  = [scenes[i] for i in indices]
+                elif len(scenes) < settings.min_frames:
+                    logger.info(f"Too few scenes ({len(scenes)}), adding uniform frames")
+                    scene_frames   = self.extract_frames_from_scenes(video_path, scenes)
+                    needed         = settings.min_frames - len(scene_frames)
+                    uniform_frames = self.extract_frames_uniform(video_path, needed)
+                    return scene_frames + uniform_frames
+                return self.extract_frames_from_scenes(video_path, scenes)
+            except Exception as scene_error:
+                logger.warning(f"Scene detection failed ({scene_error}), falling back to uniform")
+                return self.extract_frames_uniform(video_path, settings.default_frames)
+        except Exception as e:
+            logger.error(f"Smart extraction failed: {e}")
+            raise
 
-def import_processor():
-    from app.services.video_processor import VideoProcessor
+    def _resize_frame(self, frame: np.ndarray) -> np.ndarray:
+        height, width = frame.shape[:2]
+        max_dim       = settings.max_frame_dimension
+        if max(height, width) > max_dim:
+            if width >= height:
+                new_w, new_h = max_dim, int(height * (max_dim / width))
+            else:
+                new_h, new_w = max_dim, int(width * (max_dim / height))
+            frame = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
+        return frame
 
-check("Import: app.services.video_processor", import_processor)
-
-
-# ── 2. Instantiation ──────────────────────────────────────────
-_out("\n[2] Creating VideoProcessor instance...")
-
-processor = None
-
-def create_instance():
-    global processor
-    from app.services.video_processor import VideoProcessor
-    processor = VideoProcessor()
-    assert processor is not None
-
-check("VideoProcessor created", create_instance)
-
-
-# ── 3. Validate video ─────────────────────────────────────────
-_out("\n[3] Validating video file...")
-
-def validate():
-    result = processor.validate_video(video_path)
-    assert result is True
-
-check("Video is valid", validate)
-
-
-# ── 4. Get metadata ───────────────────────────────────────────
-_out("\n[4] Reading video metadata...")
-
-info = {}
-
-def get_metadata():
-    global info
-    info = processor.get_video_info(video_path)
-    assert "duration"     in info
-    assert "width"        in info
-    assert "height"       in info
-    assert "fps"          in info
-    assert "total_frames" in info
-    assert info["duration"] > 0
-    assert info["width"]    > 0
-    assert info["height"]   > 0
-    _out(f"\n       Duration    : {info['duration']:.2f} seconds")
-    _out(f"       Resolution  : {info['width']} x {info['height']}")
-    _out(f"       FPS         : {info['fps']:.2f}")
-    _out(f"       Total frames: {info['total_frames']}")
-    _out(f"       Format      : {info['format']}")
-
-check("Metadata extracted", get_metadata)
-
-
-# ── 5. Extract frames ─────────────────────────────────────────
-_out("\n[5] Extracting frames from video...")
-
-frame_paths = []
-
-def extract_frames():
-    global frame_paths
-    frame_paths = processor.extract_frames_uniform(video_path, num_frames=5)
-    assert len(frame_paths) > 0, "No frames were extracted"
-    for p in frame_paths:
-        assert Path(p).exists(), f"Frame file missing: {p}"
-        assert Path(p).suffix == ".jpg"
-        assert Path(p).stat().st_size > 0, f"Frame file is empty: {p}"
-    _out(f"\n       Extracted {len(frame_paths)} frames:")
-    for p in frame_paths:
-        size_kb = Path(p).stat().st_size // 1024
-        _out(f"       • {Path(p).name}  ({size_kb} KB)")
-
-check("Frames extracted successfully", extract_frames)
-
-
-# ── 6. Cleanup ────────────────────────────────────────────────
-_out("\n[6] Cleaning up temp frames...")
-
-def cleanup():
-    processor.cleanup_frames(frame_paths)
-    for p in frame_paths:
-        assert not Path(p).exists(), f"Frame was not deleted: {p}"
-
-check("Temp frames cleaned up", cleanup)
-
-
-# ── Summary ───────────────────────────────────────────────────
-_out("\n" + "=" * 55)
-passed = sum(1 for _, ok in results if ok)
-failed = sum(1 for _, ok in results if not ok)
-
-_out(f"  Result: {passed}/{len(results)} checks passed\n")
-
-if failed == 0:
-    _out(f"  {PASS} Step 2 complete! Ready for Step 3 (Scene Detection).")
-else:
-    _out(f"  {FAIL} {failed} check(s) failed. Fix the issues above.")
-    _out("\n  Common fixes:")
-    _out("    'ffmpeg not found'  → install ffmpeg on your system")
-    _out("    'cv2 not found'     → pip install opencv-python")
-    _out("    'No frames'         → check your video file is not corrupted")
-
-_out("=" * 55 + "\n")
-sys.exit(0 if failed == 0 else 1)
+    def cleanup_frames(self, frame_paths: List[str]):
+        for frame_path in frame_paths:
+            try:
+                os.remove(frame_path)
+            except Exception as e:
+                logger.warning(f"Could not delete {frame_path}: {e}")
+        if frame_paths:
+            try:
+                parent = Path(frame_paths[0]).parent
+                if not any(parent.iterdir()):
+                    parent.rmdir()
+                    logger.info(f"Removed temp folder: {parent}")
+            except Exception as e:
+                logger.warning(f"Could not remove temp folder: {e}")
