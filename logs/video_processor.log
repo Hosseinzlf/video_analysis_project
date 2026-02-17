@@ -1,0 +1,99 @@
+2026-02-17 13:16:19,780 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 13:16:19,780 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 13:16:19,784 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 13:16:19,784 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 13:16:19,784 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 13:16:19,786 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 13:16:19,786 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 13:16:20,437 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 13:16:20,438 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/464dd771-1ba6-4b36-bf1b-a4a74931484d
+2026-02-17 15:03:48,584 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:03:48,584 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:03:48,588 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:03:48,588 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:03:48,588 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:03:48,590 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:03:48,591 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 15:03:49,240 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 15:03:49,241 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/836ac645-7ed9-4e22-be79-8df0f1d74dbe
+2026-02-17 15:08:04,484 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:08:04,484 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:08:04,487 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:08:04,487 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:08:04,488 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:08:04,490 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:08:04,490 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 15:08:05,128 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 15:08:05,129 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/a5c9f482-58e9-4440-9dd0-7b3a3832cc7b
+2026-02-17 15:09:31,506 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:09:31,506 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:09:31,509 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:09:31,510 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:09:31,510 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:09:31,512 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:09:31,512 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 15:09:32,161 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 15:09:32,162 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/49636ef9-091a-40c2-947d-dd2ff2ea4e92
+2026-02-17 15:17:54,124 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:17:54,124 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:17:54,127 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:17:54,128 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:17:54,128 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:17:54,130 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: [Errno 2] No such file or directory: 'ffprobe'
+2026-02-17 15:17:54,130 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 15:17:54,781 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 15:17:54,782 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/c0f50f3d-9475-4b64-b5e3-39b764a90981
+2026-02-17 15:21:25,669 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:21:25,669 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:21:25,669 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:21:25,669 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:21:25,670 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:21:25,670 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:21:25,670 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 15:21:26,322 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 15:21:26,323 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/6bd2033c-fd9d-4a72-a027-7fe3e3bb6ee6
+2026-02-17 15:22:38,085 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:22:38,085 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:22:38,085 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:22:38,085 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:22:38,085 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:22:38,085 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:22:38,085 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 15:22:38,726 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 15:22:38,727 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/ed8c4e47-dc8a-46ed-a8e1-3481281d5627
+2026-02-17 15:22:47,157 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:22:47,157 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:22:47,157 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:22:47,157 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:22:47,157 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:22:47,157 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:22:47,157 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 15:22:47,811 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 15:22:47,812 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/e80578e7-88e0-4e86-a143-3dff6ce39e7e
+2026-02-17 15:23:45,285 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:23:45,285 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:23:45,285 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:23:45,285 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:23:45,285 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:23:45,285 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:23:45,285 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 15:23:45,958 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 15:23:45,959 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/7b7ee9d4-90d3-4934-97ee-4fe56058e1ad
+2026-02-17 15:25:01,434 | video_processor | INFO | validate_video:85 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:25:01,435 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:25:01,435 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:25:01,435 | video_processor | ERROR | validate_video:109 | Validation failed: Could not read video info: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:25:01,435 | video_processor | INFO | get_video_info:37 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:25:01,435 | video_processor | ERROR | get_video_info:73 | Failed to read metadata: module 'ffmpeg' has no attribute 'probe'
+2026-02-17 15:25:01,435 | video_processor | INFO | extract_frames_uniform:122 | Extracting 5 frames uniformly
+2026-02-17 15:25:02,080 | video_processor | INFO | extract_frames_uniform:159 | Extracted 5 frames
+2026-02-17 15:25:02,081 | video_processor | INFO | cleanup_frames:209 | Removed temp folder: temp/3b4b58aa-a99d-4dee-b80a-3fad240a71e0
+2026-02-17 15:29:35,699 | video_processor | INFO | validate_video:116 | Validating video: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:29:35,699 | video_processor | INFO | get_video_info:61 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:29:39,963 | video_processor | INFO | get_video_info:100 | Metadata: {'duration': 5.758549, 'width': 1920, 'height': 1080, 'fps': 30.0, 'total_frames': 171, 'format': 'mov,mp4,m4a,3gp,3g2,mj2'}
+2026-02-17 15:29:39,963 | video_processor | INFO | validate_video:136 | Video validation passed ✅
+2026-02-17 15:29:39,963 | video_processor | INFO | get_video_info:61 | Reading metadata for: /Users/hossein/coding/video_analysis_project/video-analysis-api/uploads/test_video.mp4
+2026-02-17 15:29:40,008 | video_processor | INFO | get_video_info:100 | Metadata: {'duration': 5.758549, 'width': 1920, 'height': 1080, 'fps': 30.0, 'total_frames': 171, 'format': 'mov,mp4,m4a,3gp,3g2,mj2'}
+2026-02-17 15:29:40,009 | video_processor | INFO | extract_frames_uniform:153 | Extracting 5 frames uniformly
+2026-02-17 15:29:40,661 | video_processor | INFO | extract_frames_uniform:190 | Extracted 5 frames
+2026-02-17 15:29:40,662 | video_processor | INFO | cleanup_frames:240 | Removed temp folder: temp/23675228-82a7-4d4f-ab9f-827510c43ef9
