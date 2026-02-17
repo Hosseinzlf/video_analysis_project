@@ -1,0 +1,168 @@
+"""
+STEP 3 VALIDATION SCRIPT
+Location: video-analysis-api/step3_validate.py
+
+Usage:
+    python step3_validate.py path/to/your/video.mp4
+"""
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(".").resolve()))
+
+PASS = "✅"
+FAIL = "❌"
+results = []
+
+def check(label, fn):
+    try:
+        fn()
+        print(f"  {PASS}  {label}")
+        results.append((label, True))
+    except Exception as e:
+        print(f"  {FAIL}  {label}")
+        print(f"       └─ {e}")
+        results.append((label, False))
+
+
+print("\n" + "=" * 55)
+print("  STEP 3 VALIDATION: Scene Detection")
+print("=" * 55)
+
+# ── Get video path ────────────────────────────────────────────
+video_path = sys.argv[1] if len(sys.argv) > 1 else None
+if not video_path or not Path(video_path).exists():
+    print(f"\n  {FAIL} Provide a valid video path:")
+    print("  python step3_validate.py your_video.mp4\n")
+    sys.exit(1)
+
+print(f"\n  Testing with: {video_path}\n")
+
+
+# ── 1. Import SceneDetector ───────────────────────────────────
+print("[1] Checking imports...")
+
+def import_scene_detector():
+    from app.services.scene_detector import SceneDetector
+
+def import_updated_processor():
+    from app.services.video_processor import VideoProcessor
+    p = VideoProcessor()
+    # confirm new method exists
+    assert hasattr(p, "extract_frames_smart")
+    assert hasattr(p, "extract_frames_from_scenes")
+
+check("Import: app.services.scene_detector",        import_scene_detector)
+check("Import: VideoProcessor (updated with smart)", import_updated_processor)
+
+
+# ── 2. Create SceneDetector ───────────────────────────────────
+print("\n[2] Creating SceneDetector instance...")
+
+detector = None
+
+def create_detector():
+    global detector
+    from app.services.scene_detector import SceneDetector
+    detector = SceneDetector()
+    assert detector is not None
+    assert detector.threshold > 0
+
+check("SceneDetector created", create_detector)
+
+
+# ── 3. Detect scenes ──────────────────────────────────────────
+print("\n[3] Running scene detection...")
+
+scenes = []
+
+def detect_scenes():
+    global scenes
+    scenes = detector.detect_scenes(video_path)
+    assert isinstance(scenes, list)
+
+    # Each scene must be a (start, end) tuple
+    for s in scenes:
+        assert len(s) == 2, "Scene must be (start, end) tuple"
+        assert s[0] <= s[1],  "Start frame must be <= end frame"
+        assert s[0] >= 0,     "Start frame must be >= 0"
+
+    print(f"\n       Scenes detected : {len(scenes)}")
+    for i, (start, end) in enumerate(scenes):
+        print(f"       Scene {i+1}: frames {start} → {end}  ({end - start} frames long)")
+
+check("Scene detection ran successfully", detect_scenes)
+
+
+# ── 4. Get keyframes ──────────────────────────────────────────
+print("\n[4] Getting keyframes from scenes...")
+
+keyframes = []
+
+def get_keyframes():
+    global keyframes
+    if len(scenes) == 0:
+        print("       No scenes to get keyframes from — skipping")
+        return
+    keyframes = detector.get_scene_keyframes(scenes)
+    assert len(keyframes) == len(scenes)
+    print(f"\n       Keyframe numbers: {keyframes}")
+
+check("Keyframes generated", get_keyframes)
+
+
+# ── 5. Smart extraction ───────────────────────────────────────
+print("\n[5] Testing smart frame extraction...")
+
+smart_frames = []
+
+def smart_extract():
+    global smart_frames
+    from app.services.video_processor import VideoProcessor
+    processor    = VideoProcessor()
+    smart_frames = processor.extract_frames_smart(video_path)
+
+    assert len(smart_frames) > 0, "No frames extracted"
+    for p in smart_frames:
+        assert Path(p).exists(),          f"Frame missing: {p}"
+        assert Path(p).stat().st_size > 0, f"Frame is empty: {p}"
+
+    print(f"\n       Frames extracted : {len(smart_frames)}")
+    for p in smart_frames:
+        size_kb = Path(p).stat().st_size // 1024
+        print(f"       • {Path(p).name}  ({size_kb} KB)")
+
+check("Smart frame extraction works", smart_extract)
+
+
+# ── 6. Cleanup ────────────────────────────────────────────────
+print("\n[6] Cleaning up...")
+
+def cleanup():
+    from app.services.video_processor import VideoProcessor
+    processor = VideoProcessor()
+    processor.cleanup_frames(smart_frames)
+    for p in smart_frames:
+        assert not Path(p).exists(), f"Frame not deleted: {p}"
+
+check("Temp frames cleaned up", cleanup)
+
+
+# ── Summary ───────────────────────────────────────────────────
+print("\n" + "=" * 55)
+passed = sum(1 for _, ok in results if ok)
+failed = sum(1 for _, ok in results if not ok)
+
+print(f"  Result: {passed}/{len(results)} checks passed\n")
+
+if failed == 0:
+    print(f"  {PASS} Step 3 complete! Ready for Step 4 (API Routes).")
+else:
+    print(f"  {FAIL} {failed} check(s) failed.\n")
+    print("  Common fixes:")
+    print("    'No module scenedetect' → pip install scenedetect[opencv]")
+    print("    'No scenes detected'    → try lowering SCENE_THRESHOLD in .env")
+
+print("=" * 55 + "\n")
+sys.exit(0 if failed == 0 else 1)
