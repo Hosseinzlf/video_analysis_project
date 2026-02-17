@@ -35,8 +35,15 @@ outputs/
 .DS_Store
 Thumbs.db
 
-# Uploads - exclude all video files (keep them local only)
+# Step validation scripts (local use only)
+step1_validation.py
+step2_validation.py
+step3_validation.py
+step*_validation*.py
+
+# Uploads - exclude videos except test_video.mp4 (keep test_video in repo)
 uploads/*.mp4
+!uploads/test_video.mp4
 uploads/*.avi
 uploads/*.mov
 uploads/*.mkv
