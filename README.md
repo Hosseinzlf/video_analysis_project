@@ -165,4 +165,4 @@ processor.cleanup_frames(frames)
 
 ## License
 
-MIT (or your chosen license.)
+Education ussage is permitted.
