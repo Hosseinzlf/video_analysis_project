@@ -107,8 +107,10 @@ except Exception as e:
 print("\n[3] Waiting for AI analysis to complete...")
 print("    (This may take 10-30 seconds for Gemini API)")
 
-max_wait = 60
+max_wait = 90
 poll_interval = 3
+# Long timeout: server may be busy calling Gemini (10-30s) and won't respond until done
+results_timeout = 45
 elapsed = 0
 
 while elapsed < max_wait:
@@ -118,7 +120,7 @@ while elapsed < max_wait:
     try:
         response = requests.get(
             f"{API_URL}/api/v1/results/{job_id}",
-            timeout=5
+            timeout=results_timeout
         )
 
         if response.status_code == 200:
@@ -147,14 +149,13 @@ while elapsed < max_wait:
                 print(f"    Time       : {data.get('processing_time', 0):.2f}s")
                 
                 if data.get("description"):
+                    desc = data["description"]
                     print(f"\n  AI Description:")
                     print("  " + "─" * 58)
-                    
-                    # Format the description nicely
-                    desc_lines = data["description"].split("\n")
+                    # Print full description to terminal (line by line, with wrapping)
+                    desc_lines = desc.split("\n")
                     for line in desc_lines:
                         if line.strip():
-                            # Wrap long lines
                             if len(line) > 56:
                                 words = line.split()
                                 current_line = "  "
@@ -170,8 +171,10 @@ while elapsed < max_wait:
                                 print(f"  {line}")
                         else:
                             print()
-                    
                     print("  " + "─" * 58)
+                    # Also print raw description so it's always visible in terminal
+                    print(f"\n  [Full description text]:")
+                    print(desc)
                 else:
                     print(f"\n  {FAIL} No description generated!")
                 
