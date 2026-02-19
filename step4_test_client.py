@@ -142,12 +142,9 @@ while elapsed < max_wait:
                 print(f"       Proc. time : {data.get('processing_time', 0):.2f}s")
                 
                 if data.get("description"):
-                    desc = data["description"]
                     print(f"\n  Description:")
-                    for line in desc.split("\n"):
+                    for line in data["description"].split("\n"):
                         print(f"       {line}")
-                    print(f"\n  [Full description text]:")
-                    print(desc)
                 
                 break
 

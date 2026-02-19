@@ -149,11 +149,9 @@ while elapsed < max_wait:
                 print(f"    Time       : {data.get('processing_time', 0):.2f}s")
                 
                 if data.get("description"):
-                    desc = data["description"]
                     print(f"\n  AI Description:")
                     print("  " + "─" * 58)
-                    # Print full description to terminal (line by line, with wrapping)
-                    desc_lines = desc.split("\n")
+                    desc_lines = data["description"].split("\n")
                     for line in desc_lines:
                         if line.strip():
                             if len(line) > 56:
@@ -172,9 +170,6 @@ while elapsed < max_wait:
                         else:
                             print()
                     print("  " + "─" * 58)
-                    # Also print raw description so it's always visible in terminal
-                    print(f"\n  [Full description text]:")
-                    print(desc)
                 else:
                     print(f"\n  {FAIL} No description generated!")
                 
