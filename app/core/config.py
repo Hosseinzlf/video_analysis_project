@@ -4,8 +4,11 @@ from pathlib import Path
 
 
 class Settings(BaseSettings):
+    # API Keys
+    google_api_key: str = ""
+
     # Provider
-    llm_provider: str = "local"
+    llm_provider: str = "google"
 
     # Directories
     upload_dir: str = "uploads"
@@ -30,6 +33,9 @@ class Settings(BaseSettings):
     # Frame quality
     frame_quality: int = 85
     max_frame_dimension: int = 1920
+
+    # Optional: path to ffprobe binary (if not on PATH)
+    ffprobe_path: str = "ffprobe"
 
     class Config:
         env_file = ".env"

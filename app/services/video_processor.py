@@ -1,10 +1,11 @@
 import cv2
+import json
 import os
+import subprocess
 import uuid
 import numpy as np
 from pathlib import Path
-from typing import List, Dict, Tuple
-import ffmpeg
+from typing import List, Dict, Tuple, Optional
 
 from app.core.config import settings
 from app.utils.logger import setup_logger
@@ -21,30 +22,50 @@ class VideoProcessor:
     - Clean up temporary files
     """
 
-    def __init__(self, temp_dir: str = None):
-        self.temp_dir = Path(temp_dir or settings.temp_dir)
+    def __init__(self, temp_dir: Optional[str] = None):
+        self.temp_dir = Path(temp_dir or settings.temp_dir or "temp")
         self.temp_dir.mkdir(exist_ok=True)
 
         from app.services.scene_detector import SceneDetector
         self.scene_detector = SceneDetector()
 
+    def _run_ffprobe(self, video_path: str) -> dict:
+        """Run ffprobe and return JSON with format and streams."""
+        cmd = [
+            settings.ffprobe_path,
+            "-v", "quiet",
+            "-print_format", "json",
+            "-show_format",
+            "-show_streams",
+            str(video_path),
+        ]
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(result.stderr or f"ffprobe exited with {result.returncode}")
+        return json.loads(result.stdout)
+
     def get_video_info(self, video_path: str) -> Dict:
         try:
             logger.info(f"Reading metadata for: {video_path}")
-            probe        = ffmpeg.probe(video_path)
+            probe        = self._run_ffprobe(video_path)
             video_stream = next(s for s in probe["streams"] if s["codec_type"] == "video")
             duration     = float(probe["format"]["duration"])
             width        = int(video_stream["width"])
             height       = int(video_stream["height"])
-            fps_str      = video_stream["r_frame_rate"]
+            fps_str      = video_stream.get("r_frame_rate", "30/1")
             num, den     = fps_str.split("/")
-            fps          = float(num) / float(den)
+            fps          = float(num) / float(den) if float(den) else 30.0
             total_frames = int(video_stream.get("nb_frames", 0))
             if total_frames == 0:
                 total_frames = int(duration * fps)
             info = {"duration": duration, "width": width, "height": height,
                     "fps": fps, "total_frames": total_frames,
-                    "format": probe["format"]["format_name"]}
+                    "format": probe["format"].get("format_name", "unknown")}
             logger.info(f"Metadata: {info}")
             return info
         except Exception as e:
