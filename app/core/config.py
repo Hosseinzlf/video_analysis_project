@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     # File settings
     max_file_size: int = 100000000
-    allowed_extensions: List[str] = ["mp4", "avi", "mov", "mkv", "webm"]
+    allowed_extensions: str = "mp4,avi,mov,mkv,webm"
 
     # Processing settings
     max_video_duration: int = 300
@@ -31,12 +31,16 @@ class Settings(BaseSettings):
     frame_quality: int = 85
     max_frame_dimension: int = 1920
 
-    # FFmpeg/ffprobe (optional: set FFPROBE_PATH if not on PATH, e.g. /opt/homebrew/bin/ffprobe)
-    ffprobe_path: str = "ffprobe"
-
     class Config:
         env_file = ".env"
         case_sensitive = False
+
+    def get_extensions(self) -> List[str]:
+        """Parse comma-separated extensions into a list.
+        Handles both plain (mp4,avi,...) and JSON-style (["mp4","avi",...]) env values.
+        """
+        raw = [e.strip() for e in self.allowed_extensions.split(",")]
+        return [e.strip('[]"\'') for e in raw if e.strip('[]"\'')]
 
 
 settings = Settings()
