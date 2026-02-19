@@ -35,12 +35,8 @@ outputs/
 .DS_Store
 Thumbs.db
 
-# Step validation scripts (local use only)
-step1_validation.py
-step2_validation.py
-step3_validation.py
-step*_validation*.py
-
+# Validation and step scripts (local/dev only; not for GitHub)
+step*.py
 # Uploads - exclude videos except test_video.mp4 (keep test_video in repo)
 uploads/*.mp4
 !uploads/test_video.mp4
