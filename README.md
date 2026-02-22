@@ -1,6 +1,6 @@
 # Video Analysis API
 
-FastAPI service that analyzes videos and returns an **AI-generated description** using Google LLM model. It validates uploads, extracts keyframes (with scene detection), and sends them to Gemini for a text summary.
+FastAPI service that analyzes videos and returns an **AI-generated description** using Google LLM model. 
 
 ---
 
