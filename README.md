@@ -7,7 +7,7 @@ FastAPI service that analyzes videos and returns an **AI-generated description**
 ## Features
 
 - **Video validation** — File type, size, duration limits (via ffprobe)
-- **Smart frame extraction** — Scene detection or uniform sampling
+- **Smart frame extraction** — Scene detection 
 - **AI description** — Google Gemini analyzes frames and returns a summary
 - **REST API** — Upload video, get job ID, poll for results
 
