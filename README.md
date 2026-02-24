@@ -11,6 +11,7 @@ FastAPI service that analyzes videos and returns an **AI-generated description**
 - **AI description** — Google Gemini analyzes frames and returns a summary
 - **REST API** — Upload video, get job ID, poll for results
 
+
 ---
 
 ## Prerequisites
