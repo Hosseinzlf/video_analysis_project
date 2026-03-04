@@ -16,35 +16,44 @@ FastAPI service that analyzes videos and returns an **AI-generated description**
 
 ## Prerequisites
 
-- **Python** 3.10+
-- **FFmpeg** (includes `ffprobe`) — e.g. `brew install ffmpeg` on macOS
-- **Google API key** — [Create one](https://aistudio.google.com/app/apikey) for Gemini
+- **Python 3.10+** — check with `python3 --version`
+- **FFmpeg** (includes `ffprobe`):
+  - macOS: `brew install ffmpeg`
+  - Ubuntu/Debian: `sudo apt install ffmpeg`
+  - Windows: [Download from ffmpeg.org](https://ffmpeg.org/download.html) and add to PATH
+- **Google Gemini API key** — get one free at [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
 
 ---
 
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/video_analysis_project.git
-cd video-analysis-api
+git clone https://github.com/Hosseinzlf/video_analysis_project.git
+cd video_analysis_project/video-analysis-api
 ```
 
 Create and activate a virtual environment, then install dependencies:
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Create a `.env` file in the project root with at least:
+Create a `.env` file by copying the provided example:
+
+```bash
+cp .env.example .env
+```
+
+Then open `.env` and set your API key:
 
 ```env
 GOOGLE_API_KEY=your_key_here
 LLM_PROVIDER=google
 ```
 
-You can also set `UPLOAD_DIR`, `MAX_VIDEO_DURATION`, `ALLOWED_EXTENSIONS`, `FFPROBE_PATH`, etc. See Configuration below.
+All other values in `.env.example` have sensible defaults and can be left as-is.
 
 ---
 
@@ -57,37 +66,31 @@ You run the API server, then use **`run_video_analysis.py`** to upload a video a
 In a terminal:
 
 ```bash
-cd video-analysis-api
-source .venv/bin/activate
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
 uvicorn app.main:app --reload --port 8000
 ```
 
-Leave this running. You should see something like: `Uvicorn running on http://127.0.0.1:8000`.
+Leave this running. You should see: `Uvicorn running on http://127.0.0.1:8000`.
 
 ### 2. Run the client with a video file
 
-In **another** terminal:
+In a **second terminal**, point the script at any video file you have:
 
 ```bash
-cd video-analysis-api
-source .venv/bin/activate
-python run_video_analysis.py <path/to/your/video.mp4>
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+python run_video_analysis.py /path/to/any/video.mp4
 ```
 
-**Example:**
-
-```bash
-python run_video_analysis.py uploads/test_video.mp4
-```
+Supported formats: `mp4`, `avi`, `mov`, `mkv`, `webm` — max 100 MB, max 5 minutes.
 
 ### 3. What you see
 
-- Health check (API and provider)
+- Health check confirming the API and Gemini are reachable
 - Upload confirmation and job ID
-- Wait for processing (about 10–30 seconds for Gemini)
-- **Results:** video info (duration, resolution, FPS), processing stats, and the **AI description** of the video printed in the terminal
+- Progress polling (processing takes ~10–30 seconds)
+- **Final result:** video info (duration, resolution, FPS) + the **AI-generated description**
 
-The script talks to `http://localhost:8000`. If the server is not running, you’ll get a connection error and a reminder to start it.
+> If the server is not running you will get a connection error — make sure Step 1 is running first.
 
 ---
 
@@ -95,10 +98,10 @@ The script talks to `http://localhost:8000`. If the server is not running, you�
 
 With the server running, open in a browser:
 
-- **Swagger UI:** http://localhost:8000/docs  
-- **ReDoc:** http://localhost:8000/redoc  
+- **Swagger UI:** http://localhost:8000/docs
+- **ReDoc:** http://localhost:8000/redoc
 
-You can upload a video and check results via the web UI.
+You can upload a video and check results directly from the browser UI.
 
 ---
 
@@ -113,11 +116,11 @@ video-analysis-api/
 │   ├── services/
 │   │   ├── video_processor.py
 │   │   ├── scene_detector.py
-│   │   └── llm_service.py     # Gemini integration
+│   │   └── llm_service.py    # Gemini integration
 │   └── utils/logger.py
-├── run_video_analysis.py     # Run script – upload video and print AI description
+├── run_video_analysis.py     # CLI client — upload video and print AI description
 ├── requirements.txt
-├── .env                      # Not committed; add GOOGLE_API_KEY
+├── .env.example              # Copy to .env and fill in your API key
 └── README.md
 ```
 
@@ -125,13 +128,14 @@ video-analysis-api/
 
 ## Configuration
 
-| Variable              | Default   | Description                    |
-|-----------------------|-----------|--------------------------------|
-| `GOOGLE_API_KEY`      | —         | **Required** for AI description |
-| `LLM_PROVIDER`        | google    | Must be `google` for Gemini     |
-| `MAX_VIDEO_DURATION`  | 300       | Max video length (seconds)     |
-| `ALLOWED_EXTENSIONS`  | mp4,...   | Allowed video extensions        |
-| `FFPROBE_PATH`        | ffprobe   | Path to ffprobe binary          |
+| Variable             | Default     | Description                         |
+|----------------------|-------------|-------------------------------------|
+| `GOOGLE_API_KEY`     | —           | **Required.** Your Gemini API key   |
+| `LLM_PROVIDER`       | google      | Must be `google`                    |
+| `MAX_VIDEO_DURATION` | 300         | Max video length in seconds         |
+| `ALLOWED_EXTENSIONS` | mp4,...     | Comma-separated allowed formats     |
+| `MAX_FILE_SIZE`      | 100000000   | Max upload size in bytes (100 MB)   |
+| `FFPROBE_PATH`       | ffprobe     | Full path to ffprobe if not on PATH |
 
 ---
 
