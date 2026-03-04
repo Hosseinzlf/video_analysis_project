@@ -82,7 +82,7 @@ python run_video_analysis.py /path/to/any/video.mp4
 
 Supported formats: `mp4`, `avi`, `mov`, `mkv`, `webm` — max 100 MB, max 5 minutes.
 
-### 3. What you see
+### 3. What you will see in the terminal
 
 - Health check confirming the API and Gemini are reachable
 - Upload confirmation and job ID
