@@ -34,7 +34,7 @@ outputs/
 # OS
 .DS_Store
 Thumbs.db
- 
+    
 # Validation and step scripts (local/dev only; not for GitHub)
 step*.py
 # Uploads - exclude videos except test_video.mp4 (keep test_video in repo)
