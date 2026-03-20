@@ -20,7 +20,7 @@ logs/
 # Temp files
 temp/
 *.tmp
-
+   
 # Output files
 outputs/
 
