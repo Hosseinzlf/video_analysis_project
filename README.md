@@ -1,7 +1,7 @@
 # Video Analysis API
 
 FastAPI service that analyzes videos and returns an **AI-generated description** using Google LLM model. 
-
+ 
 ---
 
 ## Features
